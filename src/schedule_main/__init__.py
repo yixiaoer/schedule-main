@@ -97,7 +97,7 @@ def operation_amend(id_: str, *, name: str | None = None, time: str | None = Non
 
     write_data(data)
 
-def operation_conclude(id_: str, time: str) -> None:
+def operation_conclude(id_: str, time: str = get_now()) -> None:
     # timemgr -c LAST -t now 
     data = read_data()
 
