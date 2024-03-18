@@ -25,15 +25,15 @@ Events are further classified into three statuses: 'ongoing' (for Timed events t
 
 * For *Timed events*, to start an event:
 
-```shell
-schedule-main -i|--include -n|--name '<EVENT_NAME>' -t|--time <TIME>
+```sh
+schedule-main -i|--insert -n|--name '<EVENT_NAME>' -t|--time <TIME>
 ```
 
 Example: `schedule-main -i -n 'Bilibili' -t now` marks the start of the 'Bilibili' event at the current time.
 
 * For *Instant events*, to log an event happening at a specific moment:
 
-```shell
+```sh
 schedule-main -p|--tidspunkt -n|--name "<EVENT_NAME>" -t|--time <TIME>
 ```
 
@@ -43,7 +43,7 @@ Example: `schedule-main -p -n "Baldur's Gate 3" -t now` logs a tidspunkt at the 
 
 To conclude 'ongoing' *Timed events* or update the finish time of 'ended' *Timed events*:
 
-```shell
+```sh
 schedule-main -c|--conclude <EVENT_ID|LAST|LAST-1|..> -t|--time <TIME>
 ```
 
@@ -53,7 +53,7 @@ Example: `schedule-main -c LAST -t now` updates the status of the most recent ev
 
 For *Timed events*, to adjust the start time or name; for *Instant events*, to modify the occurrence time or name：
 
-```shell
+```sh
 schedule-main -a|--amend <EVENT_ID|LAST|LAST-1|..> [-t|--time <NEW_TIME>]
 ```
 
@@ -65,7 +65,7 @@ Example: `schedule-main -a LAST -n 'Divinity: Original Sin II'` to adjust the na
 
 To remove an event：
 
-```shell
+```sh
 schedule-main -r|--remove <EVENT_ID|LAST|LAST-1|..>
 ```
 
@@ -75,8 +75,16 @@ Example: `schedule-main --remove 0` to delete the event with id 0.
 
 To display the event table：
 
-```shell
+```sh
 schedule-main -l|--list
+```
+
+### Show available options
+
+To get a list of available options:
+
+```sh
+schedule-main -h|--help
 ```
 
 Schedule Main is your go-to for managing time and events efficiently in the terminal. 

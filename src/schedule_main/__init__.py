@@ -7,6 +7,11 @@ from tabulate import tabulate
 
 DB_FILE_NAME = os.path.expanduser('~/.cache/data.json')
 
+def get_now() -> str:
+    now = datetime.datetime.now()
+    time = now.strftime('%Y-%m-%d %H:%M:%S')
+    return time
+
 def read_data() -> list:
     if not os.path.exists(DB_FILE_NAME):
         return []
@@ -22,13 +27,9 @@ def get_next_id(data: list) -> int:
         return 0
     return data[-1]['id'] + 1
 
-def operation_insert(name: str, time: str) -> None:
+def operation_insert(name: str, time: str = get_now()) -> None:
     data = read_data()
     id_ = get_next_id(data)
-
-    if time == 'now':
-        now = datetime.datetime.now()
-        time = now.strftime('%Y-%m-%d %H:%M:%S')
 
     data.append({
         'id': id_,
@@ -39,14 +40,13 @@ def operation_insert(name: str, time: str) -> None:
 
     write_data(data)
 
-def operation_tidspunkt(name: str, time: str) -> None:
+def operation_tidspunkt(name: str, time: str = get_now()) -> None:
     data = read_data()
 
     id_ = get_next_id(data)
 
     if time == 'now':
-        now = datetime.datetime.now()
-        time = now.strftime('%Y-%m-%d %H:%M:%S')
+        time = get_now()
 
     data.append({
         'id': id_,
@@ -77,8 +77,7 @@ def operation_amend(id_: str, *, name: str | None = None, time: str | None = Non
     data = read_data()
 
     if time == 'now':
-        now = datetime.datetime.now()
-        time = now.strftime('%Y-%m-%d %H:%M:%S')
+        time = get_now()
 
     if id_.startswith('LAST'):
         if id_ == 'LAST':
@@ -103,8 +102,7 @@ def operation_conclude(id_: str, time: str) -> None:
     data = read_data()
 
     if time == 'now':
-        now = datetime.datetime.now()
-        time = now.strftime('%Y-%m-%d %H:%M:%S')
+        time = get_now()
 
     if id_.startswith('LAST'):
         if id_ == 'LAST':
@@ -147,6 +145,9 @@ def operation_list() -> None:
 
     print(tabulate(contents, headers=headers, tablefmt='grid'))
 
+def operation_help() -> None:
+    print('''Usage: schedule-main -i|-p|-c|-a|-r|-l|-h''')
+
 def tokenize_args(args: list) -> dict:
     parsed_args = {}
 
@@ -179,6 +180,8 @@ def tokenize_args(args: list) -> dict:
             elif arg == '--tidspunkt': parse_option_with_no_arg('tidspunkt')
             elif arg == '-l': parse_option_with_no_arg('list')
             elif arg == '--list': parse_option_with_no_arg('list')
+            elif arg == '-h': parse_option_with_no_arg('help')
+            elif arg == '--help': parse_option_with_no_arg('help')
 
             # Options with one argument
             elif arg == '-n': parse_option_with_one_arg('-n', 'name')
@@ -202,7 +205,7 @@ def tokenize_args(args: list) -> dict:
 
     return parsed_args
 
-def dispatch(parsed_args: dict) -> None:
+def dispatch_operation(parsed_args: dict) -> None:
     if 'insert' in parsed_args:
         del parsed_args['insert']
         operation_insert(**parsed_args)
@@ -224,11 +227,14 @@ def dispatch(parsed_args: dict) -> None:
     elif 'list' in parsed_args:
         del parsed_args['list']
         operation_list(**parsed_args)
+    elif 'help' in parsed_args:
+        del parsed_args['help']
+        operation_help(**parsed_args)
 
 def main() -> None:
-    args = sys.argv
-    parsed_args = tokenize_args(args[1:])
-    dispatch(parsed_args)
+    args = sys.argv[1:]  # skip program name
+    parsed_args = tokenize_args(args)
+    dispatch_operation(parsed_args)
 
 if __name__ == '__main__':
     main()
