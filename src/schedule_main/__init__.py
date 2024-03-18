@@ -62,9 +62,9 @@ def operation_remove(id_: str) -> None:
 
     if id_.startswith('LAST'):
         if id_ == 'LAST':
-            idx = -1
+            idx = 1
         else:
-            idx = int(id_[4:]) - 1  # 4: len('LAST')
+            idx = - int(id_[4:]) + 1  # 4: len('LAST')
     else:
         for idx, item in enumerate(reversed(data)):
             if item['id'] == idx:
