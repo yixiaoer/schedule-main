@@ -1,11 +1,14 @@
 import datetime
 import json
 import os
+from pathlib import Path
 import sys
 
 from tabulate import tabulate
 
-DB_FILE_NAME = os.path.expanduser('~/.cache/data.json')
+home_dir = Path.home()
+db_file_path = home_dir / '.cache' / 'schedule-main' / 'data.json'
+db_file_path.parent.mkdir(parents=True, exist_ok=True)
 
 def get_now() -> str:
     now = datetime.datetime.now()
@@ -13,13 +16,13 @@ def get_now() -> str:
     return time
 
 def read_data() -> list:
-    if not os.path.exists(DB_FILE_NAME):
+    if not os.path.exists(db_file_path):
         return []
-    with open(DB_FILE_NAME, encoding='utf-8') as f:
+    with open(db_file_path, encoding='utf-8') as f:
         return json.load(f)
 
 def write_data(data: list) -> None:
-    with open(DB_FILE_NAME, 'w', encoding='utf-8') as f:
+    with open(db_file_path, 'w', encoding='utf-8') as f:
         json.dump(data, f)
 
 def get_next_id(data: list) -> int:
